@@ -12,8 +12,22 @@
       <!-- TODO: CODE TO RENDER LIST OF AUTHORS HERE -->
       <ul>
         <li v-for="author in authors" :key="author.id">
-          {{ author.name }} ({{ author.birthYear }})
+          <button
+            class="author"
+            :class="{ active: isSelected(author.id) }"
+            :style="{ fontWeight: isSelected(author.id) ? '700' : '400' }"
+            :title="`Click to ${isSelected(author.id) ? 'unselect' : 'select'} ${author.name}`"
+            @click="toggle(author.id)"
+          >
+            {{ author.name }} ({{ author.birthYear }})
+          </button>
         </li>
+        <p v-if="selectedAuthor">Highlighted: {{ selectedAuthor.name }}</p>
+        <ul v-if="selectedAuthor">
+          <li v-for="w in selectedAuthor.famousWorks" :key="w.title">
+            {{ w.title }} ({{ w.year }})
+          </li>
+        </ul>
       </ul>
             
       <h3>Filtering Arrays</h3>
@@ -120,6 +134,12 @@
 <script setup>
 import { ref, computed } from "vue"
 
+
+// Author high-light
+const selectedId = ref(null)
+const toggle = id => { selectedId.value = selectedId.value === id ? null : id }
+const isSelected = id => selectedId.value === id
+
 // Activity 1: Import JSON files (authors.json and bookstores.json)
 // TODO: CODE TO IMPORT JSON FILES HERE
 import authors from "../assets/JSON/authors.json"
@@ -150,9 +170,27 @@ const austen = computed(() => {
   // TODO: CODE TO FIND AUTHOR BY ID HERE
   return authors.find((author) => author.id === 3)
 })
+
+// References for selected author
+const selectedAuthor = computed(() => {
+  return authors.find(a => a.id === selectedId.value)
+})
 </script>
 
 <style scoped>
+.author{cursor:pointer;
+padding:.5rem .75rem;
+border-radius:.5rem;
+background:#f2f2f2;
+color:#333;
+border:1px solid #e5e5e5}
+
+.author:hover{filter:brightness(0.97)}
+
+.author.active{background:#ffe8a3;
+color:#222;outline:2px solid #f59e0b}
+
+
 .json-lab {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   max-width: 80vw;
