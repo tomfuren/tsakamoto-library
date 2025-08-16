@@ -185,7 +185,6 @@
     };
 
     const validateResident = (blur) => {
-        // オーストラリア居住者は任意選択なのでバリデーションなし
         errors.value.resident = null;
     };
 
